@@ -23,9 +23,9 @@ export default function CreateNewListButton(){
     };
 
     return (
-        <>
-        <Button disabled={loading} onClick={() => handleCreate}>{loading ? "Loading" : "Create new shopping list"}</Button>
+        <form onSubmit={handleCreate}>
+            <Button disabled={loading} type="submit">{loading ? "Loading" : "Create new shopping list"}</Button>
         <ErrorMessage error={error} />
-        </>
+        </form>
     )
 }

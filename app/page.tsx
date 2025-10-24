@@ -9,7 +9,7 @@ export default async function Home() {
   const { data: user, error } = await supabase.auth.getUser();
     if (error || !user) {
       return (
-        <div className="flex-col items-center justify-center my-auto">
+        <div className="flex-col items-center justify-center my-auto mx-auto">
           <DiscordSignInButton />
         </div>
       );

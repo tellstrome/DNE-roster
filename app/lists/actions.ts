@@ -16,14 +16,13 @@ export async function CreateNewList(){
     .insert({
         created_by: user.user.id
     })
-    .select("*")
-    .single();
+    .select("id");
 
     if (insertError) {
         return { success: false, error: "Error creating list." };
     }
 
-    return redirect (`/lists/${list.id}`)
+    return redirect (`/lists/${list[0].id}`)
 }
 
 export async function AddNewItem(
