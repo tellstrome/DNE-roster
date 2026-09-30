@@ -6,6 +6,11 @@ import AddNewListItem from "@/components/shopping_list/addNewListItem";
 import MarkItemAsBought from "@/components/shopping_list/markItemAsBought";
 import MarkListAsClosed from "@/components/shopping_list/markListAsClosed";
 
+// @next-codemod-ignore Cache Components adoption: this segment temporarily allows blocking.
+// Remove this opt-out after verifying the segment passes validation without it.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 interface Props {
   params: Promise<{ list_id: string }>;
 }

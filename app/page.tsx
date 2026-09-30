@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import CreateNewListButton from "@/components/shopping_list/createNewListButton";
 import Link from "next/link";
 import { Slider } from "@/components/ui/slider"
+
+// @next-codemod-ignore Cache Components adoption: this segment temporarily allows blocking.
+// Remove this opt-out after verifying the segment passes validation without it.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
+
 export default async function Home() {
   const supabase = await createClient();
   const { data: user, error } = await supabase.auth.getUser();
