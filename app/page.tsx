@@ -3,14 +3,31 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import CreateNewListButton from "@/components/shopping_list/createNewListButton";
 import Link from "next/link";
-
+import { Slider } from "@/components/ui/slider"
 export default async function Home() {
   const supabase = await createClient();
   const { data: user, error } = await supabase.auth.getUser();
     if (error || !user) {
       return (
-        <div className="flex-col items-center justify-center my-auto mx-auto">
+        <div className="flex flex-col items-center justify-center my-auto mx-auto gap-8">
           <DiscordSignInButton />
+
+          <div className="flex flex-row justify-between w-full">
+            <p>dfggfdgdf</p>
+            <Slider defaultValue={[33]} max={100} step={1}  className="grow" />
+            <p>gfdgfd</p>
+          </div>
+          <div className="flex flex-row justify-between w-full">
+            <p>gfd</p>
+            <Slider defaultValue={[33]} max={100} step={1}  className="grow"/>
+            <p>fgdgdfdfggdfgdf</p>
+          </div>
+          <div className="flex flex-row justify-between w-full">
+            <p>gfdfgd</p>
+            <Slider defaultValue={[33]} max={100} step={1}  className="grow"/>
+            <p>gfdgdf</p>
+          </div>
+          
         </div>
       );
     }
