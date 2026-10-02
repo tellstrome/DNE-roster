@@ -8,11 +8,9 @@ import Link from "next/link";
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
+import { NavBar } from "@/components/nav/navBar";
 
-// @next-codemod-ignore Cache Components adoption: this segment temporarily allows blocking.
-// Remove this opt-out after verifying the segment passes validation without it.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -30,11 +28,26 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const { data: user, error } = await supabase.auth.getUser();
+
+  let userIsOfficer = false;
+
+  if (user.user?.id && !error) {
+    const {data: player, error:playerError} = await supabase
+      .from("players")
+      .select("*")
+      .eq("user_id", user.user.id)
+      .single();
+
+    userIsOfficer = player.role === "officer";
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
@@ -51,12 +64,18 @@ export default function RootLayout({
                 <Image src="/braincell.png" width={300} height={300} alt="braincell" className="object-contain h-10" />
               </Link>
             </div>
+            <NavBar userIsOfficer={userIsOfficer} />
+            {/** 
             {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
+            */}
           </div>
 
-          <div className="flex-1 flex flex-col gap-6 p-4">     
-            {children}
-          </div>
+         
+            <div className="flex-1 flex flex-col gap-6 p-4">     
+              {children}
+            </div>
+          
+          
 
           <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
           <p>
