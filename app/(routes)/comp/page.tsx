@@ -62,7 +62,7 @@ export default async function Page() {
 
     const {data: allPlayers, error:allPlayersError} = await supabase
         .from("players")
-        .select("*, classes_specializations(*,classes(*)), player_preferences(*, preference_options(*)), player_absences(*)");
+        .select("*, classes_specializations(*,classes(*)), player_preferences(*, preference_options(*)), player_absences(*),boss_rosters(*)");
 
     const { data: specs } = await supabase
         .from("classes_specializations")
