@@ -46,7 +46,7 @@ export default async function RootLayout({
       .eq("user_id", user.user.id)
       .single();
 
-    userIsOfficer = player.role === "officer";
+    userIsOfficer = player?.role === "officer";
   }
 
   return (
