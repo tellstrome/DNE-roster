@@ -21,8 +21,8 @@ export async function NavBar({userIsOfficer = false}:Props){
     return (
         <>
             <div className="hidden sm:flex flex-row gap-1">
-                <Link href="/preferences" className={baseItem}>
-                    Preferences
+                <Link href="/" className={baseItem}>
+                    Home
                 </Link>
                 <Link href="/overview" className={baseItem}>
                     Overview
@@ -48,8 +48,8 @@ export async function NavBar({userIsOfficer = false}:Props){
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="flex w-48 flex-col p-1">
                     <DropdownMenuItem asChild>
-                        <Link href="/preferences" className={dropdownItem}>
-                            Preferences
+                        <Link href="/" className={dropdownItem}>
+                            Home
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>

@@ -118,7 +118,7 @@ export default function BossPreferences({raids,preferenceOptions,player,classSpe
         <div className="flex flex-col gap-4">
             <h2 className="text-2xl">Boss preferences</h2>
             {error && <p className="text-sm text-red-500">{error}</p>}
-            <div className="flex flex-row gap-1">
+            <div className="flex flex-row gap-1 overflow-x-auto w-full">
                 {raids && raids.length > 0 && raids.map(raid => {
                     const orderedBosses = raid.raid_bosses.sort((a, b) => a.id - b.id);
                     return (
@@ -178,7 +178,7 @@ export default function BossPreferences({raids,preferenceOptions,player,classSpe
                 
                                                 return (
                                                     <SelectItem key={item.id} value={String(item.id)} style={{ backgroundColor: colour }}>
-                                                        <span className="flex items-center gap-2" >
+                                                        <span className="flex items-center gap-2 text-xs" >
                                                             <img src={item.icon} width={20} height={20} alt="" className="shrink-0" />
                                                             {item.name}
                                                         </span>

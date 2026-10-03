@@ -1,6 +1,7 @@
 import { DiscordSignInButton } from "@/components/SignInWithDiscord";
 import { createClient } from "@/lib/supabase/server";
 import ClaimPlayerCharacter from "@/components/characterClaim/claimPlayerCharacter";
+import Preferences from "@/components/preferences/preferences";
 
 
 
@@ -32,9 +33,27 @@ export default async function Home() {
         return "Error fetching players"
     }
 
+  const {data: raidbosses, error:raidbossesError} = await supabase
+        .from("raids")
+        .select("*, raid_bosses(*)")
+        .eq("active", true)
+        .order("id", { ascending: true });
+
+    const {data:classSpecs, error: classError} = await supabase
+        .from("classes_specializations")
+        .select("*, classes(*)")
+        .order("id", { ascending: true });
+
+    const {data:preferenceOptions, error: preferenceOptionsError} = await supabase
+        .from("preference_options")
+        .select("*")
+        .order("id", { ascending: true });
+
   return (
     <div>
-      
+      {classSpecs && preferenceOptions && (
+          <Preferences userId={user.user.id} classSpecs={classSpecs} raids={raidbosses ?? []} preferenceOptions={preferenceOptions} />
+      )}
     </div>
   );
 }
