@@ -20,7 +20,7 @@ export default async function Home() {
     .from("players")
     .select("*")
     .eq("user_id", user.user.id)
-    .single();
+    .maybeSingle();
 
     if (!player) {
         return (

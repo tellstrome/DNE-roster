@@ -18,6 +18,8 @@ export async function NavBar({userIsOfficer = false}:Props){
         "flex h-9 items-center justify-center whitespace-nowrap shrink-0 rounded-md border border-accent bg-muted px-4 text-sm font-medium text-primary hover:bg-accent cursor-pointer";
     const dropdownItem = `${baseItem} w-full`;
 
+    if (!user) return null;
+
     return (
         <>
             <div className="hidden sm:flex flex-row gap-1">
