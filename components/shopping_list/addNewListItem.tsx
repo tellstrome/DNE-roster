@@ -34,7 +34,7 @@ export default function AddNewListItem({listId}:Props){
         <div className="flex flex-col">
             {open ? (
                 <form onSubmit={handleSubmit} className="flex flex-row gap-1 w-full">
-                    <Input type="text" name="inputItem" id="inputItem" className="bg-accent border border-green-500 flex-1 flex-grow" />
+                    <Input type="text" name="inputItem" id="inputItem" className="bg-accent border border-green-500 flex-1 grow" />
                     <Button type="submit">Add</Button>
                     <Button type="button" onClick={() =>setOpen(false)}>X</Button>
                 </form>
