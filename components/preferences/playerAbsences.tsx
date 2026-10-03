@@ -75,7 +75,7 @@ export default function PlayerAbsences({player}:Props){
         setError(null);
 
         const { error } = await supabase.from("player_absences").insert({
-            player_id: player.user_id,
+            player_id: player.id,
             start_date: toDateString(startDate),
             end_date: toDateString(endDate),
         });
