@@ -17,10 +17,32 @@ const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
-export const metadata: Metadata = {
+  const image = `https://dne-roster.vercel.app/opengraph-image.png`;
+
+export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "DNE Roster",
   description: "your mom",
+  openGraph: {
+    title: "DNE Roster",
+    description: "your mom",
+      url: defaultUrl,
+      type: "article",
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: `DNE Roster`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "DNE Roster",
+      description: "your mom",
+      images: [image],
+    },
 };
 
 const geistSans = Geist({

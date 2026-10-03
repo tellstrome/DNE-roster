@@ -4,28 +4,46 @@ import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Calendar } from "@/components/ui/calendar"
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Absences {
     id: number;
     user_id: string;
     start_date: string;
     end_date: string;
+    player_id: number;
+    players: Player;
 }
 
 interface Props {
-    player: {
+    players:Player[];
+}
+
+interface Player{
+    id: number;
+    name: string;
+    main_spec: number;
+    classes_specializations: {
         id: number;
+        class_id: number;
         name: string;
-        main_spec: number;
-        user_id: string;
         role: string;
+        classes: {
+            id: number;
+            name: string;
+            class_colour: string;
+        }
     }
 }
 
 
-
-export default function PlayerAbsences({player}:Props){
+export default function ManageAbsences({players}:Props){
     const supabase = createClient();
     const [absences, setAbsences] = useState<Absences[] | null>();
     const [loading, setLoading] = useState(true);
@@ -36,16 +54,17 @@ export default function PlayerAbsences({player}:Props){
     const [endDate, setEndDate] = useState<Date | undefined>(new Date())
     const [absenceLoading, setAbsenceLoading] = useState<boolean>(false);
 
+    const [selectedplayer, setSelectedPlayer] = useState<Player | null>(null);
+
     const toDateString = (d: Date) =>
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-
+    
     const fetchAbsences = async () => {
         const today = toDateString(new Date());
         const {data: absences, error:absencesError} = await supabase
             .from("player_absences")
-            .select("*")
-            .eq("player_id", player.id)
+            .select("*, players(*)")
             .gte("end_date", today)
             .order("start_date", { ascending: true });
 
@@ -66,6 +85,11 @@ export default function PlayerAbsences({player}:Props){
     
     const addNewAbsence = async () => {
         if (!startDate || !endDate) return;
+
+        if (!selectedplayer) {
+            setError("You must select a player.");
+            return;
+        }
         if (endDate < startDate) {
             setError("End date can't be before the start date.");
             return;
@@ -75,7 +99,7 @@ export default function PlayerAbsences({player}:Props){
         setError(null);
 
         const { error } = await supabase.from("player_absences").insert({
-            player_id: player.user_id,
+            player_id: selectedplayer?.id,
             start_date: toDateString(startDate),
             end_date: toDateString(endDate),
         });
@@ -115,6 +139,47 @@ export default function PlayerAbsences({player}:Props){
 
             {isOpen ? (
                 <div className="flex flex-col gap-2">
+
+                    {selectedplayer ? (
+                        <div className="w-48 flex flex-col gap-2">
+                            <div className="w-48 flex flex-row justify-between rounded-sm bg-muted border border-accent p-2"> 
+                                <p>{selectedplayer.name}</p>
+                                <button type="button" onClick={() =>setSelectedPlayer(null)}>
+                                    <X className="text-red-500"/>
+                                </button>
+                            </div>
+                            
+                        </div>
+                    ) : (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="w-48 bg-muted rounded-sm flex flex-row justify-between p-2 ">
+                                Select player
+                                <ChevronDown />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="max-h-48 overflow-auto w-48">
+                                {players.map((player) => {
+                                    const colour = player.classes_specializations?.classes?.class_colour + "80";
+                                    return (
+                                    <DropdownMenuItem key={player.id}>
+                                        <button
+                                        type="button"
+                                        onClick={() => setSelectedPlayer(player)}
+                                        className={`w-full text-left rounded-sm border p-1`}
+                                        style={{
+                                            background: colour
+                                            ? `linear-gradient(to right, transparent, #${colour})`
+                                            : undefined,
+                                        }}
+                                        >
+                                        {player.name}
+                                        </button>
+                                    </DropdownMenuItem>
+                                    );
+                                })}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+
                     <div className="flex flex-row gap-8">
             
                         <div className="flex flex-col">
@@ -163,11 +228,11 @@ export default function PlayerAbsences({player}:Props){
                 <div className="flex flex-col gap-1">
                     {absences.map(a => (
                         <div key={a.id} className="bg-muted border border-accent rounded-sm flex flex-row gap-4 p-1 mr-auto items-center">
+                            <p>{a.players.name}</p>
                             <p>Absence:</p>
                             <p>{a.start_date}</p>
                             <p>-</p>
                             <p>{a.end_date}</p>
-                            <button type="button" className="text-red-500 cursor-pointer" onClick={() => removeAbsence(a.id)}><X /></button>
                         </div>
                     ))}
                 </div>

@@ -1,6 +1,8 @@
 import { DiscordSignInButton } from "@/components/SignInWithDiscord";
 import { createClient } from "@/lib/supabase/server";
 import ClaimPlayerCharacter from "@/components/characterClaim/claimPlayerCharacter";
+import BossOrder from "@/components/manage-roster/bossOrder";
+import ManageAbsences from "@/components/manage-roster/manageAbsences";
 
 export default async function Page() {
     const supabase = await createClient();
@@ -38,11 +40,38 @@ export default async function Page() {
         )
     }
 
+    const {data: allPlayers, error:allPlayersError} = await supabase
+        .from("players")
+        .select("*, classes_specializations(*,classes(*)), player_preferences(*, preference_options(*)), player_absences(*),boss_rosters(*)")
+        .order("name", { ascending: true });
+
+    const { data: specs } = await supabase
+        .from("classes_specializations")
+        .select("*,classes(*)")
+        .order("id", { ascending: true });
+
+    const { data: preferenceOptions } = await supabase
+        .from("preference_options")
+        .select("*, roster_options(*)")
+        .order("id", { ascending: true });
+
+    const { data: rosterOptions } = await supabase
+        .from("roster_options")
+        .select("*")
+        .order("id", { ascending: true });
 
     return (
         <div>
             <h1 className="text-2xl">Manage roster</h1>
-        
+
+            {allPlayers && specs && preferenceOptions && rosterOptions && (
+                <BossOrder allPlayers={allPlayers} specs={specs} preferenceOptions={preferenceOptions} rosterOptions={rosterOptions} />
+            )}
+
+            {allPlayers && (
+                <ManageAbsences players={allPlayers} />
+            )}
+            
         </div>
     );
 }

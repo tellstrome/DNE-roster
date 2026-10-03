@@ -28,7 +28,7 @@ export function DiscordSignInButton() {
     };
 
     return (
-        <Button onClick={handleDiscordSignIn} className="h-16 w-96 bg-[#5865F2] bg-linear-to-b from-[#5865F2] to-[#3b41a7] bg-size-[100%_200%] bg-top transition-all duration-500 ease-in-out hover:bg-[0_100%] text-white text-xl flex flex-row items-center gap-4 p-3">
+        <Button onClick={handleDiscordSignIn} className="h-16 w-96 bg-[#5865F2] bg-linear-to-b from-[#5865F2] to-[#3b41a7] bg-size-[100%_200%] bg-top transition-all duration-500 ease-in-out hover:bg-[0_100%] text-white text-xl flex flex-row items-center gap-4 p-3 cursor-pointer">
             <Image src="/Discord-Symbol-White.png"
                 width={528}
                 height={400}
