@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import PlayerProfile from "./playerProfile";
 import { createClient } from "@/lib/supabase/client";
 import BossPreferences from "./bossPreferences";
+import PlayerAbsences from "./playerAbsences";
 
 
 interface Props {
@@ -89,6 +90,7 @@ export default function Preferences({userId,classSpecs,raids,preferenceOptions}:
         <div className="flex flex-col gap-8">
             <PlayerProfile player={player} classSpecs={classSpecs} onUpdate={fetchPlayer}/>
             <BossPreferences raids={raids} preferenceOptions={preferenceOptions} player={player} classSpecs={classSpecs}/>
+            <PlayerAbsences player={player} />
         </div>
     )
 }

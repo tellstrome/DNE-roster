@@ -84,10 +84,10 @@ export default async function Page() {
     return (
         <div>
             <h1 className="text-2xl">Overview</h1>
-            <Table>
+            <Table className="w-full overflow-x-auto">
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[128px]">{/* empty cell */}</TableHead>
+                        <TableHead className="w-[64px]">{/* empty cell */}</TableHead>
                         <TableHead className="w-[128px]">
                             <p>{allPlayers?.length} players</p>
                         </TableHead>
@@ -112,8 +112,11 @@ export default async function Page() {
                     return (
                         <TableRow key={p.id} className="border border-accent">
                             {index === 0 && (
-                                <TableCell rowSpan={tankPlayers?.length} className="bg-background">
-                                    Tank
+                                <TableCell rowSpan={tankPlayers?.length} className="bg-[#9bb9ee80] border border-accent">
+                                    <div className="flex flex-row items-center gap-1">
+                                        <img src="/tank.svg" width={30} height={30} alt=""/>
+                                        Tank
+                                    </div>
                                 </TableCell>
                             )}
                             <TableCell style={{ backgroundColor: colour }} className="flex flex-row gap-1">
@@ -161,8 +164,11 @@ export default async function Page() {
                     return (
                         <TableRow key={p.id} className="border border-accent">
                             {index === 0 && (
-                                <TableCell rowSpan={healerPlayers?.length} className="bg-background">
-                                    Healer
+                                <TableCell rowSpan={healerPlayers?.length} className="bg-[#ade89980] border border-accent">
+                                    <div className="flex flex-row items-center gap-1">
+                                        <img src="/healer.svg" width={30} height={30} alt=""/>
+                                        Healer
+                                    </div>
                                 </TableCell>
                             )}
                             <TableCell style={{ backgroundColor: colour }} className="flex flex-row gap-1">
@@ -210,8 +216,11 @@ export default async function Page() {
                     return (
                         <TableRow key={p.id} className="border border-accent">
                             {index === 0 && (
-                                <TableCell rowSpan={meleePlayers?.length} className="bg-background">
-                                    Melee
+                                <TableCell rowSpan={meleePlayers?.length} className="bg-[#e49e9080] border border-accent">
+                                    <div className="flex flex-row items-center gap-1">
+                                        <img src="/mdps.svg" width={30} height={30} alt=""/>
+                                        Melee
+                                    </div>
                                 </TableCell>
                             )}
                             <TableCell style={{ backgroundColor: colour }} className="flex flex-row gap-1">
@@ -259,8 +268,11 @@ export default async function Page() {
                     return (
                         <TableRow key={p.id} className="border border-accent">
                             {index === 0 && (
-                                <TableCell rowSpan={rangedPlayers?.length} className="bg-background">
-                                    Ranged
+                                <TableCell rowSpan={rangedPlayers?.length} className="bg-[#e693b880] border border-accent">
+                                    <div className="flex flex-row items-center gap-1">
+                                        <img src="/rdps.svg" width={30} height={30} alt=""/>
+                                        Ranged
+                                    </div>
                                 </TableCell>
                             )}
                             <TableCell style={{ backgroundColor: colour }} className="flex flex-row gap-1">
