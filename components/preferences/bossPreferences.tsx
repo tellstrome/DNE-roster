@@ -3,44 +3,14 @@
 import {Select,SelectContent,SelectGroup,SelectItem,SelectTrigger,SelectValue,} from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
+import { type PreferenceOption, type Player, type ClassSpec, type Raids } from "@/lib/roster";
 
 
 interface Props{
-    raids?: {
-        id: number;
-        name: string;
-        colour: string;
-        background: string;
-        raid_bosses: {
-            id: number;
-            name: string;
-            image: string;
-        }[]
-    }[];
-    preferenceOptions: {
-        id:number;
-        option: string;
-        colour:string;
-    }[];
-    player: {
-        id: number;
-        name: string;
-        main_spec: number;
-        user_id: string;
-        role: string;
-    }
-    classSpecs: {
-        id: number;
-        class_id: number;
-        name: string;
-        role: string;
-        icon: string;
-        classes: {
-            id: number;
-            name: string;
-            class_colour: string;
-        }
-    }[];
+    raids?: Raids[];
+    preferenceOptions: PreferenceOption[];
+    player: Player
+    classSpecs: ClassSpec[];
 }
 
 interface BossPref {

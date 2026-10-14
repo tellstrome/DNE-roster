@@ -5,47 +5,16 @@ import PlayerProfile from "./playerProfile";
 import { createClient } from "@/lib/supabase/client";
 import BossPreferences from "./bossPreferences";
 import PlayerAbsences from "./playerAbsences";
+import { type Raids, type Player, type PreferenceOption, type ClassSpec } from "@/lib/roster";
 
 
 interface Props {
     userId: string;
-    classSpecs: {
-        id: number;
-        class_id: number;
-        name: string;
-        role: string;
-        icon: string;
-        classes: {
-            id: number;
-            name: string;
-            class_colour: string;
-        }
-    }[];
-    raids?: {
-        id: number;
-        name: string;
-        colour: string;
-        background: string;
-        raid_bosses: {
-            id: number;
-            name: string;
-            image: string;
-        }[]
-    }[]
-    preferenceOptions: {
-        id:number;
-        option: string;
-        colour:string;
-    }[];
+    classSpecs: ClassSpec[];
+    raids?: Raids[]
+    preferenceOptions: PreferenceOption[];
 }
 
-interface Player {
-    id: number;
-    name: string;
-    main_spec: number;
-    user_id: string;
-    role: string;
-}
 
 export default function Preferences({userId,classSpecs,raids,preferenceOptions}:Props){
     const supabase = createClient();

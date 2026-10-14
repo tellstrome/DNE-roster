@@ -1,8 +1,8 @@
 import { DiscordSignInButton } from "@/components/SignInWithDiscord";
 import { createClient } from "@/lib/supabase/server";
 import ClaimPlayerCharacter from "@/components/characterClaim/claimPlayerCharacter";
-import BossOrder from "@/components/manage-roster/bossOrder";
-import ManageAbsences from "@/components/manage-roster/manageAbsences";
+import BossOrder from "@/components/manageRoster/bossOrder";
+import ManageAbsences from "@/components/manageRoster/manageAbsences";
 
 export default async function Page() {
     const supabase = await createClient();
@@ -10,16 +10,20 @@ export default async function Page() {
     if (error || !user) {
         return (
             <div className="flex flex-col items-center justify-center my-auto mx-auto gap-8">
-            <DiscordSignInButton />
+                <DiscordSignInButton />
             </div>
         );
     }
 
-    const {data: player, error:playerError} = await supabase
+    const { data: player, error:playerError } = await supabase
         .from("players")
         .select("*")
         .eq("user_id", user.user.id)
         .maybeSingle();
+
+    if (playerError) {
+        return "Error fetching players"
+    }
 
     if (!player) {
         return (
@@ -27,9 +31,6 @@ export default async function Page() {
             <ClaimPlayerCharacter userId={user.user.id}/>
         </div>
         )
-    }
-    if (playerError) {
-        return "Error fetching players"
     }
 
     if (player.role !== "officer"){
@@ -40,7 +41,7 @@ export default async function Page() {
         )
     }
 
-    const {data: allPlayers, error:allPlayersError} = await supabase
+    const { data: allPlayers } = await supabase
         .from("players")
         .select("*, classes_specializations(*,classes(*)), player_preferences(*, preference_options(*)), player_absences(*),boss_rosters(*)")
         .order("name", { ascending: true });

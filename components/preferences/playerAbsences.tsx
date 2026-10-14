@@ -5,29 +5,19 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Calendar } from "@/components/ui/calendar"
 import { X } from "lucide-react";
+import { type Absence, type Player } from "@/lib/roster";
 
-interface Absences {
-    id: number;
-    user_id: string;
-    start_date: string;
-    end_date: string;
-}
+
 
 interface Props {
-    player: {
-        id: number;
-        name: string;
-        main_spec: number;
-        user_id: string;
-        role: string;
-    }
+    player: Player
 }
 
 
 
 export default function PlayerAbsences({player}:Props){
     const supabase = createClient();
-    const [absences, setAbsences] = useState<Absences[] | null>();
+    const [absences, setAbsences] = useState<Absence[] | null>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>();
 

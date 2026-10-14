@@ -5,27 +5,11 @@ import { useState } from "react";
 import {Select,SelectContent,SelectGroup,SelectItem,SelectTrigger,SelectValue,} from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client";
 import { Loader2 } from "lucide-react";
+import { type ClassSpec, type Player } from "@/lib/roster";
 
 interface Props{
-    player: {
-        id: number;
-        name: string;
-        main_spec: number;
-        user_id: string;
-        role: string;
-    }
-    classSpecs: {
-        id: number;
-        class_id: number;
-        name: string;
-        role: string;
-        icon: string;
-        classes: {
-            id: number;
-            name: string;
-            class_colour: string;
-        }
-    }[];
+    player: Player
+    classSpecs: ClassSpec[];
     onUpdate: () => void | Promise<void>
 }
 

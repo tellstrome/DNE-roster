@@ -1,109 +1,110 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# <DNE Roster>
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+A small app for managing a World of Warcraft raid team's roster. Players enter their preferences (do they want to play, which spec) on a per-boss basis and register planned absences. Officers see everything in one overview and can override any preference to build the final comp for each boss.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## How the final comp is decided
+
+For every player and boss, the roster status and spec are resolved in this order:
+
+1. **Officer override** (set in the roster management page)
+2. **Player preference** (set by the player)
+3. **Default** (the "no preference" option, and the player's main spec)
 
 ## Features
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+- **Player preferences:** per boss, choose whether you want to play, bonus roll, or sit out, and optionally pick an alternative spec.
+- **Planned absences:** players can enter upcoming absences. Officers can enter absences for anyone.
+- **Roster overview:** a table grouped by role (tank, healer, melee, ranged) showing every player's status per boss, with absence indicators.
+- **Officer tools:** override a player's spec or roster status per boss, or mass-override a whole row (In / Out / Away).
+- **Boss order:** drag and drop to reorder bosses, and hide bosses that should not appear in the final comp.
+- **Discord login** via Supabase Auth.
 
-## Demo
+## Tech stack
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+- [Next.js](https://nextjs.org) (App Router)
+- [Supabase](https://supabase.com) for database and auth, using `@supabase/ssr` for cookie-based sessions
+- [Discord OAuth](https://supabase.com/docs/guides/auth/social-login/auth-discord) for sign-in
+- [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com/) for styling and components
+- [dnd kit](https://dndkit.com/) for drag and drop
 
-## Deploy to Vercel
+## Getting started
 
-Vercel deployment will guide you through creating a Supabase account and project.
+### 1. Install dependencies
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+```bash
+npm install
+```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### 2. Create a Supabase project
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+Create a project at [supabase.com](https://supabase.com), then copy the project URL and API key from **Project Settings → API**.
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### 3. Set environment variables
 
-## Clone and run locally
+Create a `.env.local` file in the project root:
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
+```
 
-2. Create a Next.js app using the Supabase Starter template npx command
+> Use the variable names your project actually reads (see `lib/supabase/client.ts`).
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+### 4. Set up the database
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+Run the contents of [`schema.sql`](./schema.sql) in the Supabase **SQL Editor**. This creates the tables, row level security policies and seed data.
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+The app relies on specific seed rows, so do not renumber them:
 
-3. Use `cd` to change into the app's directory
+| Table                | id  | Meaning                     |
+| -------------------- | --- | --------------------------- |
+| `preference_options` | 1   | Will bonus roll             |
+| `preference_options` | 2   | Wants to play               |
+| `preference_options` | 3   | No preference (the default) |
+| `preference_options` | 4   | Wants to sit out            |
+| `roster_options`     | 1   | In                          |
+| `roster_options`     | 2   | Out                         |
+| `roster_options`     | 3   | Away                        |
 
-   ```bash
-   cd with-supabase-app
-   ```
+### 5. Configure Discord login
 
-4. Rename `.env.example` to `.env.local` and update the following:
+1. Create an application in the [Discord Developer Portal](https://discord.com/developers/applications).
+2. Add the Supabase callback URL (shown in **Authentication → Providers → Discord**) as a redirect URI.
+3. Paste the Discord client ID and secret into the Supabase Discord provider settings and enable it.
 
-  ```env
-  NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=[INSERT SUPABASE PROJECT API PUBLISHABLE OR ANON KEY]
-  ```
-  > [!NOTE]
-  > This example uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, which refers to Supabase's new **publishable** key format.
-  > Both legacy **anon** keys and new **publishable** keys can be used with this variable name during the transition period. Supabase's dashboard may show `NEXT_PUBLIC_SUPABASE_ANON_KEY`; its value can be used in this example.
-  > See the [full announcement](https://github.com/orgs/supabase/discussions/29260) for more information.
+### 6. Run the app
 
-  Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+```bash
+npm run dev
+```
 
-5. You can now run the Next.js local development server:
+The app runs at [http://localhost:3000](http://localhost:3000).
 
-   ```bash
-   npm run dev
-   ```
+## Database overview
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+| Table                                | Purpose                                                                                         |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `players`                            | Raid members, linked to a Supabase auth user, with a main spec and a role (`raider` or officer) |
+| `classes`, `classes_specializations` | Classes and their specs, with icons and roles                                                   |
+| `raids`, `raid_bosses`               | Raid tiers and their bosses (with display order and visibility)                                 |
+| `preference_options`                 | The choices a player can make per boss (bonus roll, play, no preference, sit out)               |
+| `player_preferences`                 | A player's chosen option and spec per boss                                                      |
+| `player_absences`                    | Planned absences with start and end dates                                                       |
+| `roster_options`                     | Final roster statuses (In, Out, Away)                                                           |
+| `boss_rosters`                       | Officer overrides per player and boss                                                           |
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+## Roles and permissions
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+- **Raiders** can edit their own preferences and absences.
+- **Officers** can additionally reorder and hide bosses and override any player's spec or roster status.
 
-## Feedback and issues
+Permissions are enforced with Supabase row level security.
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+## Known limitations
 
-## More Supabase examples
+- Nothing verifies that a player claims the correct character profile. The team is small and trusted, so this is intentional for now.
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+## Roadmap
+
+- Let officers manage raids, raid bosses and new players.
+- Let officers manage existing players' specs and roles.

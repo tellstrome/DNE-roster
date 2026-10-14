@@ -11,41 +11,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { type Absence, type Player } from "@/lib/roster";
 
-interface Absences {
-    id: number;
-    user_id: string;
-    start_date: string;
-    end_date: string;
-    player_id: number;
-    players: Player;
-}
 
 interface Props {
     players:Player[];
 }
 
-interface Player{
-    id: number;
-    name: string;
-    main_spec: number;
-    classes_specializations: {
-        id: number;
-        class_id: number;
-        name: string;
-        role: string;
-        classes: {
-            id: number;
-            name: string;
-            class_colour: string;
-        }
-    }
-}
+
 
 
 export default function ManageAbsences({players}:Props){
     const supabase = createClient();
-    const [absences, setAbsences] = useState<Absences[] | null>();
+    const [absences, setAbsences] = useState<Absence[] | null>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>();
 
