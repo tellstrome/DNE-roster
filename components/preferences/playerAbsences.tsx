@@ -97,6 +97,10 @@ export default function PlayerAbsences({player}:Props){
         }
     }
 
+    const now = new Date();
+    const oneYearAhead = new Date(now);
+    oneYearAhead.setFullYear(now.getFullYear() + 1);
+
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-2xl">Planned absences</h2>
@@ -116,6 +120,8 @@ export default function PlayerAbsences({player}:Props){
                                 id="startDate"
                                 selected={startDate}
                                 onSelect={setStartDate}
+                                startMonth={now}
+                                endMonth={oneYearAhead}
                                 className="rounded-md border"
                                 captionLayout="dropdown"
                             />
@@ -127,6 +133,8 @@ export default function PlayerAbsences({player}:Props){
                                 id="endDate"
                                 selected={endDate}
                                 onSelect={setEndDate}
+                                startMonth={now}
+                                endMonth={oneYearAhead}
                                 className="rounded-md border"
                                 captionLayout="dropdown"
                             />

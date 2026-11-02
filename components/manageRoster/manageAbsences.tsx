@@ -137,6 +137,10 @@ export default function ManageAbsences({players}:Props){
         }
     }
 
+    const now = new Date();
+    const oneYearAhead = new Date(now);
+    oneYearAhead.setFullYear(now.getFullYear() + 1);
+
     return (
         <div className="flex flex-col gap-4">
             <h2 className="text-2xl">Planned absences</h2>
@@ -197,6 +201,8 @@ export default function ManageAbsences({players}:Props){
                                 id="startDate"
                                 selected={startDate}
                                 onSelect={setStartDate}
+                                startMonth={now}
+                                endMonth={oneYearAhead}
                                 className="rounded-md border"
                                 captionLayout="dropdown"
                             />
@@ -208,6 +214,8 @@ export default function ManageAbsences({players}:Props){
                                 id="endDate"
                                 selected={endDate}
                                 onSelect={setEndDate}
+                                startMonth={now}
+                                endMonth={oneYearAhead}
                                 className="rounded-md border"
                                 captionLayout="dropdown"
                             />
@@ -238,6 +246,8 @@ export default function ManageAbsences({players}:Props){
                             mode="single"
                             selected={viewDay}
                             onSelect={(d) => d && setViewDay(d)}
+                            startMonth={now}
+                            endMonth={oneYearAhead}
                             captionLayout="dropdown"
                             className="rounded-md border w-full max-w-96"
                             components={{ DayButton: DayWithNames }}
@@ -304,7 +314,6 @@ export default function ManageAbsences({players}:Props){
                             </DefaultModal>
                         </ModalBackdrop>
                     )}
-                    
                 </div>
             ) : (
                 <p>No planned absences</p>
