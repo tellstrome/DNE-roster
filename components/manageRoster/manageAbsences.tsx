@@ -52,7 +52,7 @@ export default function ManageAbsences({players}:Props){
         const today = toDateString(new Date());
         const {data: absences, error:absencesError} = await supabase
             .from("player_absences")
-            .select("*, players(*)")
+            .select("*, players(*, classes_specializations(*,classes(*)))")
             .gte("end_date", today)
             .order("start_date", { ascending: true });
 
@@ -258,16 +258,33 @@ export default function ManageAbsences({players}:Props){
                         <ModalBackdrop onClose={() => setAbsencesIsOpen(false)}>
                             <DefaultModal onClose={() => setAbsencesIsOpen(false)}>
                                 <h2 className="text-xl">All planned absences</h2>
-                                {absences.map(a => (
-                                    <div key={a.id} className="bg-muted border border-accent rounded-sm flex flex-row gap-4 p-1 mr-auto items-center">
-                                        <p>{a.players.name}</p>
-                                        <p>Absence:</p>
-                                        <p>{a.start_date}</p>
-                                        <p>-</p>
-                                        <p>{a.end_date}</p>
-                                        <button type="button" className="text-red-500 cursor-pointer" onClick={() => setConfirmDeleteAbsence(a.id)}><X /></button>
-                                    </div>
-                                ))}
+                                {absences.map(a => {
+                                    const base = a.players.classes_specializations?.classes.class_colour;
+                                    const classColour = base ? `#${base}4D` : undefined;
+                                    return (
+                                        <div key={a.id} style={{ backgroundColor: classColour }} className={`border border-accent rounded-sm flex flex-row gap-4 p-1 mr-auto items-center w-full justify-between`}>
+                                            <span className="flex flex-row flex-wrap gap-x-2 items-center">
+                                                <img
+                                                    src={a.players.classes_specializations?.icon}
+                                                    width={20}
+                                                    height={20}
+                                                    alt={a.players.classes_specializations?.name}
+                                                    className="shrink-0 h-[20px] w-[20px]"
+                                                    />
+                                                <p className="w-24 truncate">{a.players.name}</p>
+                                                <span className="flex flex-row flex-wrap gap-x-2">
+                                                    <p>Absence:</p>
+                                                    <span className="flex flex-row flex-wrap gap-x-2">
+                                                        <p>{a.start_date}</p>
+                                                        <p>-</p>
+                                                        <p>{a.end_date}</p>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                            <button type="button" className="text-red-500 bg-background  rounded-sm cursor-pointer" onClick={() => setConfirmDeleteAbsence(a.id)}><X /></button>
+                                        </div>
+                                    )
+                                })}
                             </DefaultModal>
                         </ModalBackdrop>
                     )}
