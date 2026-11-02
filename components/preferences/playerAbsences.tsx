@@ -118,6 +118,7 @@ export default function PlayerAbsences({player}:Props){
                             <Calendar
                                 mode="single"
                                 id="startDate"
+                                weekStartsOn={1}
                                 selected={startDate}
                                 onSelect={setStartDate}
                                 startMonth={now}
@@ -131,6 +132,7 @@ export default function PlayerAbsences({player}:Props){
                             <Calendar
                                 mode="single"
                                 id="endDate"
+                                weekStartsOn={1}
                                 selected={endDate}
                                 onSelect={setEndDate}
                                 startMonth={now}

@@ -199,6 +199,7 @@ export default function ManageAbsences({players}:Props){
                             <Calendar
                                 mode="single"
                                 id="startDate"
+                                weekStartsOn={1}
                                 selected={startDate}
                                 onSelect={setStartDate}
                                 startMonth={now}
@@ -212,6 +213,7 @@ export default function ManageAbsences({players}:Props){
                             <Calendar
                                 mode="single"
                                 id="endDate"
+                                weekStartsOn={1}
                                 selected={endDate}
                                 onSelect={setEndDate}
                                 startMonth={now}
@@ -246,6 +248,7 @@ export default function ManageAbsences({players}:Props){
                             mode="single"
                             selected={viewDay}
                             onSelect={(d) => d && setViewDay(d)}
+                            weekStartsOn={1}
                             startMonth={now}
                             endMonth={oneYearAhead}
                             captionLayout="dropdown"
