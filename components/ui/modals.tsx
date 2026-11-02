@@ -41,7 +41,7 @@ export function ModalBackdrop({ children, onClose, closable = true }: ModalProps
 
 export function DefaultModal({children,onClose,width = null}:ModalProps){
     return(
-        <div className={`bg-background m-6 flex flex-col rounded-sm p-6 bg-muted border border-accent drop-shadow-lg z-20 gap-2 overflow-y-auto max-h-[90vh] ${width ? width : `w-full max-w-xl`}`} onClick={(e) => e.stopPropagation()}>
+        <div className={`bg-background m-6 flex flex-col rounded-sm p-6 border border-accent drop-shadow-lg z-20 gap-2 overflow-y-auto max-h-[90vh] ${width ? width : `w-full max-w-xl`}`} onClick={(e) => e.stopPropagation()}>
             <button onClick={onClose} className="text-red-500 hover:text-red-700 px-1 fixed top-1 right-0" title="Close">
                 <X size={20} />
             </button>
@@ -52,7 +52,7 @@ export function DefaultModal({children,onClose,width = null}:ModalProps){
 
 export function DefaultModalPopup({children,onClose,width = null}:ModalProps){
     return(
-        <div className={`bg-background m-6 flex flex-col rounded-sm p-6 bg-muted border border-accent drop-shadow-lg z-20 gap-2 overflow-y-auto max-h-[90vh] ${width ? width : `w-full max-w-96`}`} onClick={(e) => e.stopPropagation()}>
+        <div className={`bg-background m-6 flex flex-col rounded-sm p-6 border border-accent drop-shadow-lg z-20 gap-2 overflow-y-auto max-h-[90vh] ${width ? width : `w-full max-w-96`}`} onClick={(e) => e.stopPropagation()}>
             {children}
         </div>
     )

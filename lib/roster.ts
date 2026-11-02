@@ -61,6 +61,7 @@ export interface Player {
     id: number;
     name: string;
     main_spec: number | null;
+    main_role: Role;
     user_id: string | null;
     role: string;
     classes_specializations: ClassSpec | null;

@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import ClaimPlayerCharacter from "@/components/characterClaim/claimPlayerCharacter";
 import BossOrder from "@/components/manageRoster/bossOrder";
 import ManageAbsences from "@/components/manageRoster/manageAbsences";
+import AddNewPlayer from "@/components/manageRoster/addNewPlayer";
+import ManageRosterPage from "@/components/manageRoster/manageRosterPage";
 
 export default async function Page() {
     const supabase = await createClient();
@@ -62,16 +64,10 @@ export default async function Page() {
         .order("id", { ascending: true });
 
     return (
-        <div>
+        <div className="flex flex-col gap-8">
             <h1 className="text-2xl">Manage roster</h1>
 
-            {allPlayers && specs && preferenceOptions && rosterOptions && (
-                <BossOrder allPlayers={allPlayers} specs={specs} preferenceOptions={preferenceOptions} rosterOptions={rosterOptions} />
-            )}
-
-            {allPlayers && (
-                <ManageAbsences players={allPlayers} />
-            )}
+            <ManageRosterPage />
             
         </div>
     );

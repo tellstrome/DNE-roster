@@ -10,6 +10,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Table, TableBody, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { ROLES, type Role, type PreferenceOption, type PlayerPreference, type Absence, type RosterOption, type BossRosterRow, type Bosses } from "@/lib/roster";
 import ManageRosterTableRole from "./manageRosterTableRole";
+import AddNewPlayer from "./addNewPlayer";
 
 interface SortableProps{
     id:number,
@@ -45,6 +46,7 @@ interface Props {
         id: number;
         name: string;
         main_spec: number | null;
+        main_role: Role;
         user_id: string | null;
         role: string;
         classes_specializations: {
@@ -75,9 +77,10 @@ interface Props {
     }[];
     preferenceOptions: PreferenceOption[];
     rosterOptions: RosterOption[];
+    onUpdate: () => void;
 }
 
-export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOptions}:Props){
+export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOptions,onUpdate}:Props){
     const supabase = createClient();
     const [bosses, setBosses] = useState<Bosses[]>([])
     const [error, setError] = useState<string | null>();
@@ -253,7 +256,7 @@ export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOpti
 
 
     return(
-        <div className="flex flex-col gap-4 my-8">
+        <div className="flex flex-col gap-4">
             <h2 className="text-3xl">Boss order</h2>
             <div>
                  <p>Drag and drop boss-frames to change boss order. {savingChanges && <span className="ml-2 text-muted-foreground">Saving...</span>}</p>
@@ -282,6 +285,7 @@ export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOpti
 
             <h2 className="text-3xl mt-8">Roster</h2>
             <div>
+                <p>Click on a player's name to edit their nickname and main spec.</p>
                 <p>Click on a player's spec icon under each boss to override their spec preference.</p>
                 <p>Click on the roster status (in/out) to override roster preferences.</p>
             </div>
@@ -323,6 +327,7 @@ export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOpti
                                 overrides={overrides}
                                 overrideOption={overrideOption}
                                 massOverride={massOverride}
+                                onUpdate={onUpdate}
                             />
                         ))}
                     </TableBody>

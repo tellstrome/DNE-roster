@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipTrigger,} from "@/components/ui/tooltip
 import { ROLES, type Role, type Player, type ClassSpec, type PlayerPreference, type Absence, type RosterOption, type BossRosterRow } from "@/lib/roster";
 import { Check, Clock, Coins, Sofa } from 'lucide-react';
 import {Select,SelectContent,SelectGroup,SelectItem,SelectTrigger,SelectValue,} from "@/components/ui/select"
+import ManageSinglePlayer from "./manageSinglePlayer";
 
 interface Props {
     players: Player[];
@@ -34,9 +35,10 @@ interface Props {
         playerId: number, 
         rosterOptionId: number
     ) => void;
+    onUpdate: () => void;
 }
 
-export default function ManageRosterTableRole({players,role,raidbosses,specById,specs,rosterOptions,loading,defaultRoster,rosterById,overrides,overrideOption,massOverride }:Props){
+export default function ManageRosterTableRole({players,role,raidbosses,specById,specs,rosterOptions,loading,defaultRoster,rosterById,overrides,overrideOption,massOverride,onUpdate }:Props){
 
     const dateString = (d: Date) =>
         d.toLocaleDateString("sv-SE", { timeZone: "Europe/Oslo" });
@@ -76,9 +78,8 @@ export default function ManageRosterTableRole({players,role,raidbosses,specById,
                                 </div>
                             </TableCell>
                         )}
-                        <TableCell style={{ backgroundColor: classColour }} className="flex flex-row gap-1">
-                            <img src={p.classes_specializations?.icon} width={20} height={20} alt="" className="shrink-0" />
-                            {p.name}
+                        <TableCell style={{ backgroundColor: classColour }} className="flex flex-row gap-1 p-0">                            
+                            <ManageSinglePlayer classSpecs={specs} onUpdate={onUpdate} player={p} specById={specById}/>
                         </TableCell>
                         {raidbosses?.map((boss) => {
                             const pref = prefByBoss.get(boss.id);

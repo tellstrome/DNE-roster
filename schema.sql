@@ -120,7 +120,6 @@ create table public.boss_rosters (
   constraint boss_rosters_player_id_fkey foreign key (player_id) references public.players(id),
   constraint boss_rosters_spec_fkey foreign key (spec) references public.classes_specializations(id),
   constraint boss_rosters_option_fkey foreign key (option) references public.roster_options(id),
-  -- required by the app's upsert(..., { onConflict: "player_id,boss_id" })
   constraint boss_rosters_player_boss_key unique (player_id, boss_id)
 );
 
@@ -157,17 +156,15 @@ as $function$
 $function$;
 
 create or replace function public.prevent_role_change()
-  returns trigger
-  language plpgsql
-  security definer
-  set search_path to ''
-as $$
+  returns trigger language plpgsql as $$
   begin
-    if new.role is distinct from old.role and not (select public.is_officer()) then
+    if new.role is distinct from old.role
+      and auth.uid() is not null          
+      and not (select public.is_officer()) then
       raise exception 'Only officers can change roles';
     end if;
     return new;
-end;
+  end;
 $$;
 
 create trigger players_prevent_role_change
@@ -214,6 +211,10 @@ create policy "Enable update for users based on user_id" on public.player_prefer
 create policy "Enable read access for all users" on public.players as permissive for select to authenticated using (true);
 create policy "authenticated users can claim an unclaimed player" on public.players as permissive for update to authenticated using ((user_id is null)) with check ((user_id = (select auth.uid())));
 create policy "players can update their own row" on public.players as permissive for update to authenticated using ((user_id = (select auth.uid()))) with check ((user_id = (select auth.uid())));
+create policy "officers can create new" on public.players for insert to authenticated with check ((select is_officer()));
+create policy "officers can delete" on public.players for delete to authenticated using ((select is_officer()));
+create policy "officers can update" on public.players for update to authenticated using ((select is_officer()))
+with check ((select is_officer()));
 
 -- preference_options, roster_options
 create policy "Enable read access for all users" on public.preference_options as permissive for select to authenticated using (true);

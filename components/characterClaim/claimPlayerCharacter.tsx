@@ -6,6 +6,7 @@ import { ChevronDown, X } from "lucide-react";
 import { useEffect,useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import DeleteAccount from "../preferences/deleteAccount";
 
 interface Player{
     id: number;
@@ -92,7 +93,7 @@ export default function ClaimPlayerCharacter({userId}:Props){
 
     return (
         <div className="flex flex-col gap-4 w-full max-w-96 ">
-            <p className="text-xl">Select your profile</p>
+            <p className="text-2xl">Select your profile</p>
 
             {selectedplayer ? (
                 <div className="w-48 flex flex-col gap-2">
@@ -112,7 +113,7 @@ export default function ClaimPlayerCharacter({userId}:Props){
                         Select player
                         <ChevronDown />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="max-h-48 overflow-auto w-48">
+                    <DropdownMenuContent className="max-h-48 overflow-auto w-48 bg-muted">
                         {players.map((player) => {
                             const colour = player.classes_specializations?.classes?.class_colour + "80";
                             return (
@@ -135,6 +136,11 @@ export default function ClaimPlayerCharacter({userId}:Props){
                     </DropdownMenuContent>
                 </DropdownMenu>
             )}
+            <div className="mt-8">
+                
+                <p>or</p>
+                <DeleteAccount />
+            </div>
         </div>
     )
 
