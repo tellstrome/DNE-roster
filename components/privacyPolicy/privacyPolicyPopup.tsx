@@ -34,7 +34,7 @@ export default function PrivacyPolicyPopup({variant, className = ""}:Props){
                             <p>Your data is stored in Supabase. For more information, see <Link className="font-bold text-blue-500 hover:text-blue-600" href="https://supabase.com/privacy">Supabase Privacy Policy</Link>.</p>
 
                             <h2 className="text-lg mt-4 font-bold">Data deletion:</h2>
-                            <p>You can delete your account at any time under the "preferences" tab. Deleting your account will permanently delete your data and prevent you from managing your preferences and absences.</p>
+                            <p>You can delete your account at any time. Deleting your account will permanently delete your data and prevent you from managing your preferences and absences.</p>
                             <p>Your ingame nickname and any planned absence dates remains in the app while you are in the raidteam in order for officers to manage and create boss rosters, and will only be deleted if you leave the raid team.</p>
 
                             <h2 className="text-lg mt-4 font-bold">Cookies and sessions:</h2>
