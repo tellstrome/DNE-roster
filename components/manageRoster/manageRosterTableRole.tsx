@@ -106,7 +106,10 @@ export default function ManageRosterTableRole({players,role,raidbosses,specById,
                                             disabled={loading}
                                             
                                         >
-                                            <SelectTrigger className={`${compactTrigger} w-8 min-w-8 shrink-0 justify-center [&>span]:flex [&>span]:items-center`} title={selectedSpec?.name}>
+                                            <SelectTrigger 
+                                            className={`${compactTrigger} w-8 min-w-8 shrink-0 justify-center [&>span]:flex [&>span]:items-center`} 
+                                            title={selectedSpec?.name}
+                                            style={{ backgroundColor: "transparent" }}>
                                                 <SelectValue placeholder="?">
                                                 {selectedSpec && (
                                                     <img
@@ -147,7 +150,7 @@ export default function ManageRosterTableRole({players,role,raidbosses,specById,
                                         >
                                             <SelectTrigger
                                                 className={`${compactTrigger} w-20`}
-                                                style={{ backgroundColor: cellColour }}
+                                                style={{ backgroundColor: "transparent" }}
                                                 >
                                                 <SelectValue />
                                             </SelectTrigger>

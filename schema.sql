@@ -189,6 +189,7 @@ alter table public.boss_rosters enable row level security;
 create policy "Enable insert for officers" on public.boss_rosters as permissive for insert to authenticated with check ((select public.is_officer()));
 create policy "Enable read access for all users" on public.boss_rosters as permissive for select to authenticated using (true);
 create policy "officers can update roster" on public.boss_rosters as permissive for update to authenticated using ((select public.is_officer())) with check ((select public.is_officer()));
+create policy "officers can delete" on public.boss_rosters for delete to authenticated using ((select is_officer()));
 
 -- classes, classes_specializations
 create policy "Enable read access for all users" on public.classes as permissive for select to public using (true);

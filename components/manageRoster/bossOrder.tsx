@@ -11,6 +11,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow, } from "@/component
 import { ROLES, type Role, type PreferenceOption, type PlayerPreference, type Absence, type RosterOption, type BossRosterRow, type Bosses } from "@/lib/roster";
 import ManageRosterTableRole from "./manageRosterTableRole";
 import AddNewPlayer from "./addNewPlayer";
+import { DefaultModalPopup, ModalBackdrop } from "../ui/modals";
 
 interface SortableProps{
     id:number,
@@ -86,6 +87,7 @@ export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOpti
     const [error, setError] = useState<string | null>();
     const [loading, setLoading] = useState(true);
     const [savingChanges, setSavingChanges] = useState<boolean>(false);
+    const [confirmReset, setConfirmReset] = useState<boolean>(false);
 
     const [overrides, setOverrides] = useState<Record<string, BossRosterRow | undefined>>(() =>
         Object.fromEntries(
@@ -161,6 +163,22 @@ export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOpti
             setBosses((items) =>
                 items.map((b) => (b.id === id ? { ...b, visible: !visible } : b))
             );
+        }
+    };
+
+    const removeAllBossRosters = async () => {
+        setError(null);
+        const { error } = await supabase
+            .from("boss_rosters")
+            .delete()
+            .neq("id", 0); 
+
+        if (error) {
+            setError(error.message);
+        } else {
+            setOverrides({});  
+            onUpdate();
+            setConfirmReset(false);
         }
     };
 
@@ -289,6 +307,25 @@ export default function BossOrder({allPlayers,specs,preferenceOptions,rosterOpti
                 <p>Click on a player's spec icon under each boss to override their spec preference.</p>
                 <p>Click on the roster status (in/out) to override roster preferences.</p>
             </div>
+            <Button className="mr-auto" variant={"secondary"} onClick={()=>setConfirmReset(true)}>
+                Reset table
+            </Button>
+            {confirmReset && (
+                <ModalBackdrop onClose={()=>setConfirmReset(false)}>
+                    <DefaultModalPopup onClose={()=>setConfirmReset(false)}>
+                        <h2 className="text-xl">Confirm resetting table</h2>
+                        <p>Removes the current boss comps and shows only player preferences.</p>
+                        <div className="flex flex-row gap-1 items-center ml-auto mt-2">
+                            <Button onClick={()=>setConfirmReset(false)}>
+                                Cancel
+                            </Button>
+                            <Button variant="destructive" onClick={()=>removeAllBossRosters()} disabled={loading}>
+                                Confirm
+                            </Button>
+                        </div>
+                    </DefaultModalPopup>
+                </ModalBackdrop>
+            )}
             <div>
                 <Table className="table-fixed overflow-x-auto" style={{ width: 64 + 128 + 128 * (sortedBosses?.length ?? 0) }}>
                     <TableHeader>
