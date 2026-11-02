@@ -68,7 +68,8 @@ export default async function Page() {
     return (
         <div>
             <h1 className="text-2xl">Overview</h1>
-            <Table className="table-fixed overflow-x-auto" style={{ width: 64 + 128 + 128 * (raidbosses?.length ?? 0) }}>
+            <p>This is an overview of everyone's preferences, it does not necessarily represent the final comp.</p>
+            <Table className="table-fixed overflow-x-auto mt-8" style={{ width: 64 + 128 + 128 * (raidbosses?.length ?? 0) }}>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-[100px]">{/* empty cell */}</TableHead>

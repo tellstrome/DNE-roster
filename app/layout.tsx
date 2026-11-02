@@ -11,6 +11,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { NavBar } from "@/components/nav/navBar";
 import { TooltipProvider } from "@/components/ui/tooltip"
+import PrivacyPolicyPopup from "@/components/privacyPolicy/privacyPolicyPopup";
 
 
 const defaultUrl = process.env.VERCEL_URL
@@ -112,6 +113,7 @@ export default async function RootLayout({
               Supabase
             </a>
           </p>
+          <PrivacyPolicyPopup variant="link" />
           <ThemeSwitcher />
         </footer>
         </main>

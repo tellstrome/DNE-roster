@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import BossPreferences from "./bossPreferences";
 import PlayerAbsences from "./playerAbsences";
 import { type Raids, type Player, type PreferenceOption, type ClassSpec } from "@/lib/roster";
+import DeleteAccount from "./deleteAccount";
 
 
 interface Props {
@@ -60,6 +61,7 @@ export default function Preferences({userId,classSpecs,raids,preferenceOptions}:
             <PlayerProfile player={player} classSpecs={classSpecs} onUpdate={fetchPlayer}/>
             <BossPreferences raids={raids} preferenceOptions={preferenceOptions} player={player} classSpecs={classSpecs}/>
             <PlayerAbsences player={player} />
+            <DeleteAccount />
         </div>
     )
 }
