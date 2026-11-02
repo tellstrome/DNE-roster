@@ -53,7 +53,7 @@ export default function AddNewPlayer({classSpecs, onUpdate}:Props){
     return(
         <>
             <div className="w-full flex flex-col gap-4">
-                <h2 className="text-2xl">Add new players</h2>
+                <h2 className="text-2xl">Add new players to the team</h2>
                 <form className="w-full flex flex-row flex-wrap gap-2" onSubmit={addNewPlayerProfile}>
                     <Input type="text" name="playerNickname" placeholder="Player nickname" className="max-w-48" />
                     <div className="flex flex-row gap-2 items-center">

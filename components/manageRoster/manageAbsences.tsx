@@ -1,9 +1,9 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { ChevronDown, X } from "lucide-react";
 import {
   DropdownMenu,
@@ -12,20 +12,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Absence, type Player } from "@/lib/roster";
+import type { DayButton } from "react-day-picker";
+import { DefaultModal, ModalBackdrop } from "../ui/modals";
 
 
 interface Props {
     players:Player[];
 }
 
-
-
-
 export default function ManageAbsences({players}:Props){
     const supabase = createClient();
     const [absences, setAbsences] = useState<Absence[] | null>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>();
+
+    const [viewDay, setViewDay] = useState<Date>(new Date());
+    const [absencesIsOpen, setAbsencesIsOpen] = useState<boolean>(false);
+    const [confirmDeleteAbsence, setConfirmDeleteAbsence] = useState<number | null>(null);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [startDate, setStartDate] = useState<Date | undefined>(new Date())
@@ -37,7 +40,14 @@ export default function ManageAbsences({players}:Props){
     const toDateString = (d: Date) =>
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-    
+    const absentOn = (day: Date): string[] => {
+        const key = toDateString(day);
+        const names = (absences ?? [])
+            .filter(a => a.start_date <= key && key <= a.end_date)
+            .map(a => a.players.name);
+        return [...new Set(names)];
+    };
+
     const fetchAbsences = async () => {
         const today = toDateString(new Date());
         const {data: absences, error:absencesError} = await supabase
@@ -57,6 +67,23 @@ export default function ManageAbsences({players}:Props){
     useEffect(() => {
         fetchAbsences();
     }, [supabase]);
+
+    const DayWithNames = useMemo(() => {
+        return function DayWithNames(props: React.ComponentProps<typeof DayButton>) {
+            const names = absentOn(props.day.date);
+            return (
+                <CalendarDayButton {...props} className="items-start justify-start ">
+                    <span className="px-1">{props.day.date.getDate()}</span>
+                    {names.slice(0, 1).map(n => (
+                        <span key={n} className="w-full truncate text-left text-[10px] leading-tight rounded bg-red-500/40 px-1">
+                            {n}
+                        </span>
+                    ))}
+                    {names.length > 1 && <span className="text-[10px] bg-fuchsia-500/40 w-full rounded">+{names.length - 1} more</span>}
+                </CalendarDayButton>
+            );
+        };
+    }, [absences]);
 
     if (loading) return "Loading..."
 
@@ -106,6 +133,7 @@ export default function ManageAbsences({players}:Props){
         } else {
             setIsOpen(false);
             fetchAbsences();
+            setConfirmDeleteAbsence(null);
         }
     }
 
@@ -204,15 +232,62 @@ export default function ManageAbsences({players}:Props){
 
             {absences && absences?.length > 0 ? (
                 <div className="flex flex-col gap-1">
-                    {absences.map(a => (
-                        <div key={a.id} className="bg-muted border border-accent rounded-sm flex flex-row gap-4 p-1 mr-auto items-center">
-                            <p>{a.players.name}</p>
-                            <p>Absence:</p>
-                            <p>{a.start_date}</p>
-                            <p>-</p>
-                            <p>{a.end_date}</p>
+                    <p>Click on a day to see who is absent. Red = one or more players absent.</p>
+                    <div className="flex flex-row flex-wrap gap-2 ">
+                        <Calendar
+                            mode="single"
+                            selected={viewDay}
+                            onSelect={(d) => d && setViewDay(d)}
+                            captionLayout="dropdown"
+                            className="rounded-md border w-full max-w-96"
+                            components={{ DayButton: DayWithNames }}
+                        />
+                        <div className="flex flex-col gap-1 border border-accent rounded-sm flex-1 min-w-48 max-w-96 p-2">
+                            <h3 className="text-lg">{toDateString(viewDay)}</h3>
+                            {absentOn(viewDay).length > 0 ? (
+                                absentOn(viewDay).map(name => <p key={name}>{name}</p>)
+                            ) : (
+                                <p>Nobody is absent</p>
+                            )}
                         </div>
-                    ))}
+                    </div>
+                    <Button onClick={() => setAbsencesIsOpen(true)} className="mr-auto" variant={"secondary"}>
+                        {absencesIsOpen ? "Hide " : "Show "} all absences
+                    </Button>
+                    {absencesIsOpen && (
+                        <ModalBackdrop onClose={() => setAbsencesIsOpen(false)}>
+                            <DefaultModal onClose={() => setAbsencesIsOpen(false)}>
+                                <h2 className="text-xl">All planned absences</h2>
+                                {absences.map(a => (
+                                    <div key={a.id} className="bg-muted border border-accent rounded-sm flex flex-row gap-4 p-1 mr-auto items-center">
+                                        <p>{a.players.name}</p>
+                                        <p>Absence:</p>
+                                        <p>{a.start_date}</p>
+                                        <p>-</p>
+                                        <p>{a.end_date}</p>
+                                        <button type="button" className="text-red-500 cursor-pointer" onClick={() => setConfirmDeleteAbsence(a.id)}><X /></button>
+                                    </div>
+                                ))}
+                            </DefaultModal>
+                        </ModalBackdrop>
+                    )}
+                    {confirmDeleteAbsence && (
+                        <ModalBackdrop onClose={() => setConfirmDeleteAbsence(null)}>
+                            <DefaultModal onClose={() => setConfirmDeleteAbsence(null)}>
+                                <h2 className="text-xl">Delete absence</h2>
+                                <p>Confirm deleting absence</p>
+                                <div className="flex flex-row gap-1 items-center ml-auto mt-2">
+                                    <Button onClick={()=>setConfirmDeleteAbsence(null)}>
+                                        Cancel
+                                    </Button>
+                                    <Button variant="destructive" onClick={()=>removeAbsence(confirmDeleteAbsence)} disabled={loading}>
+                                        Confirm
+                                    </Button>
+                                </div>
+                            </DefaultModal>
+                        </ModalBackdrop>
+                    )}
+                    
                 </div>
             ) : (
                 <p>No planned absences</p>
